@@ -56,3 +56,11 @@ Run the development server:
 ```bash
 npm run dev
   ```
+5. ## How to use?
+
+<ul>
+  <li>Create an account or Just log in as a Test User</li>
+  <li>Once you reach your dashboard, copy your unique link and share for others to ask questions or comment</li>
+  <li>For the enquirer, type in your custom message or can ask AI to provide question suggestions.</li>
+  <li>Then send the question/comment.</li>
+</ul>
