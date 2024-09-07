@@ -15,8 +15,8 @@ Anonym is a Next.js application built with TypeScript that allows users to send 
 - **Frontend**: Next.js, TypeScript
 - **Authentication**: NextAuth.js
 - **API**: OpenAI ChatGPT API
-- **Styling**: CSS Modules / Styled Components / Tailwind CSS (choose your preferred method)
-- **Database**: (e.g., MongoDB, PostgreSQL - specify based on your setup)
+- **Styling**: Tailwind CSS
+- **Database**: MongoDB
 
 ## Getting Started
 
