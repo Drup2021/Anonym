@@ -8,7 +8,6 @@ import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { CardHeader, CardContent, Card } from '@/components/ui/card';
-import { useCompletion } from 'ai/react';
 import {
   Form,
   FormControl,
@@ -38,15 +37,11 @@ export default function SendMessage() {
   const params = useParams<{ username: string }>();
   const username = params.username;
 
-  const {
-    complete,
-    completion,
-    isLoading: isSuggestLoading,
-    error,
-  } = useCompletion({
-    api: '/api/suggest-messages',
-    initialCompletion: initialMessageString,
-  });
+  const [suggestions, setSuggestions] = useState<string[]>(
+    parseStringMessages(initialMessageString)
+  );
+  const [isSuggestLoading, setIsSuggestLoading] = useState(false);
+  const [suggestionError, setSuggestionError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof messageSchema>>({
     resolver: zodResolver(messageSchema),
@@ -60,9 +55,25 @@ export default function SendMessage() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  // abusive message check
   const onSubmit = async (data: z.infer<typeof messageSchema>) => {
     setIsLoading(true);
     try {
+      // Check if the message contains abusive content
+      const checkResponse = await axios.post<ApiResponse>('/api/check-message', {
+        content: data.content,
+      });
+
+      if (checkResponse.data.message === 'Yes') {
+        toast({
+          title: 'Message Blocked',
+          description: 'The receiver has safe mode enabled. Please re-enter your message without toxic/abusive content.',
+          variant: 'destructive',
+        });
+        return; // Stop execution if the message is abusive
+      }
+
+      // Proceed with the original send-message API call
       const response = await axios.post<ApiResponse>('/api/send-message', {
         ...data,
         username,
@@ -72,13 +83,14 @@ export default function SendMessage() {
         title: response.data.message,
         variant: 'default',
       });
-      form.reset({ ...form.getValues(), content: '' });
+
+      form.reset({...form.getValues(), content: ''});
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast({
         title: 'Error',
         description:
-          axiosError.response?.data.message ?? 'Failed to sent message',
+          axiosError.response?.data.message ?? 'Failed to send message',
         variant: 'destructive',
       });
     } finally {
@@ -87,11 +99,19 @@ export default function SendMessage() {
   };
 
   const fetchSuggestedMessages = async () => {
+    setIsSuggestLoading(true);
+    setSuggestionError(null);
     try {
-      complete('');
+      const response = await axios.post<{ messages: string }>(
+        '/api/suggest-messages'
+      );
+      const messages = parseStringMessages(response.data.messages);
+      setSuggestions(messages);
     } catch (error) {
       console.error('Error fetching messages:', error);
-      // Handle error appropriately
+      setSuggestionError('Failed to fetch suggestions. Please try again.');
+    } finally {
+      setIsSuggestLoading(false);
     }
   };
 
@@ -158,21 +178,21 @@ export default function SendMessage() {
             <h3 className="text-xl font-semibold">Messages</h3>
           </CardHeader>
           <CardContent className="flex flex-col space-y-4">
-            {error ? (
-              <p className="text-red-500">{error.message}</p>
-            ) : (
-              parseStringMessages(completion).map((message, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className="mb-2"
-                  onClick={() => handleMessageClick(message)}
-                >
-                  {message}
-                </Button>
-              ))
-            )}
-          </CardContent>
+        {suggestionError ? (
+          <p className="text-red-500">{suggestionError}</p>
+        ) : (
+          suggestions.map((message, index) => (
+            <Button
+              key={index}
+              variant="outline"
+              className="mb-2"
+              onClick={() => handleMessageClick(message)}
+            >
+              {message}
+            </Button>
+          ))
+        )}
+      </CardContent>
         </Card>
       </div>
       <Separator className="my-6" />
