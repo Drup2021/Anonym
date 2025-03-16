@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
 export const AcceptMessageSchema = z.object({
-  acceptMessages: z.boolean(),
+  isAcceptingMessages : z.boolean(),
+  safeMode: z.boolean()
 });
