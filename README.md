@@ -1,6 +1,10 @@
 # Anonym
 
-Anonym is a Next.js application built with TypeScript that allows users to send and receive anonymous messages. It also leverages the OpenAI ChatGPT API to generate random questions or prompts to encourage interaction. The application features two main interfaces: one for viewing received messages and another for sending anonymous messages. Authentication is implemented using NextAuth.
+Anonym is a Next.js application built with TypeScript that enables users to send and receive anonymous messages seamlessly. To enhance user engagement, it integrates the Google Gemini API for generating fun and witty questions. 
+
+The application addresses a **critical challenge faced by anonymous messaging platforms—ensuring user safety**. It incorporates a **dedicated Safe Mode** that effectively **filters harmful or abusive content**, tackling issues like **extortion, blackmail, and the transmission of harmful or explicit messages**.
+
+Anonym provides two core interfaces: one for users to view received messages and another for sending anonymous messages. Authentication is securely managed using **NextAuth**, ensuring user privacy and data protection.
 
 ## Features
 
