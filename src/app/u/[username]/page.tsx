@@ -60,6 +60,11 @@ export default function SendMessage() {
     setIsLoading(true);
     try {
       // Check if the message contains abusive content
+      const safeModeResponse = await axios.get<ApiResponse>('/api/safe-mode');
+    const safeModeEnabled = safeModeResponse.data.safeMode;
+
+    // If safe mode is on, check if the message contains abusive content
+    if (safeModeEnabled) {
       const checkResponse = await axios.post<ApiResponse>('/api/check-message', {
         content: data.content,
       });
@@ -67,12 +72,13 @@ export default function SendMessage() {
       if (checkResponse.data.message === 'Yes') {
         toast({
           title: 'Message Blocked',
-          description: 'The receiver has safe mode enabled. Please re-enter your message without toxic/abusive content.',
+          description:
+            'The receiver has safe mode enabled. Please re-enter your message without toxic/abusive content.',
           variant: 'destructive',
         });
         return; // Stop execution if the message is abusive
       }
-
+    }
       // Proceed with the original send-message API call
       const response = await axios.post<ApiResponse>('/api/send-message', {
         ...data,
