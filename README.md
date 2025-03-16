@@ -5,7 +5,8 @@ Anonym is a Next.js application built with TypeScript that allows users to send 
 ## Features
 
 - **Anonymous Messaging**: Users can send and receive anonymous messages.
-- **ChatGPT Integration**: Generates random prompts or questions using the OpenAI API.
+- **LLM Integration**: Generates random prompts or questions using the Gemini Flash 2.0 API.
+- **Safe Mode(Harmful Content Monitoring): Classifies content into whether it is harmful or not and does not allow harmful messages to be sent in safe mode.
 - **Authentication**: Secure user authentication with NextAuth.
 - **User Interfaces**: Separate interfaces for sending and receiving messages.
 - **Responsive Design**: Optimized for both desktop and mobile devices.
@@ -14,7 +15,7 @@ Anonym is a Next.js application built with TypeScript that allows users to send 
 
 - **Frontend**: Next.js, TypeScript
 - **Authentication**: NextAuth.js
-- **API**: OpenAI ChatGPT API
+- **API**: Gemini (Google AI Studio) API
 - **Styling**: Tailwind CSS
 - **Database**: MongoDB
 
@@ -27,7 +28,7 @@ Before you begin, ensure you have the following installed:
 - Node.js (>= 14.x)
 - npm or yarn
 - A MongoDB database instance (if using a database)
-- An OpenAI API key
+- A Gemini API key (from Google AI Studio)
 
 ### Installation
 
@@ -44,7 +45,7 @@ Create a `.env.local` file in the root directory and add the following environme
 ```env
 NEXTAUTH_URL = ""
 NEXTAUTH_SECRET = ""
-OPENAI_API_KEY = ""
+GEMINI_API_KEY = ""
 MONGODB_URI = ""
 RESEND_API_KEY = ""
 ```
@@ -60,7 +61,9 @@ npm run dev
 
 <ul>
   <li>Create an account or Just log in as a Test User</li>
-  <li>Once you reach your dashboard, copy your unique link and share for others to ask questions or comment</li>
+  <li>Once you reach your dashboard, copy over your unique link and share for others to ask questions or comment</li>
+  <li>User can switch on safe-mode for harmful content detection</li>
   <li>For the enquirer, type in your custom message or can ask AI to provide question suggestions.</li>
   <li>Then send the question/comment.</li>
+  <li>If safe mode is ON, message only gets transfered if it does not contain any harmful/abusive content.</li>
 </ul>
